@@ -1,0 +1,9 @@
+ 0.01 - 2007/12/16
+	- Begin!
+
+ 0.02 - 2009/02/22
+	- Added wild keys in configuration
+	- Added -c and -j parameters to dump
+
+ 0.03 - 2009/03/02
+	- Added example
