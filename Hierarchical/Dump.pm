@@ -2,7 +2,7 @@
 
 package Config::General::Hierarchical::Dump;
 
-$Config::General::Hierarchical::Dump::VERSION = 0.03;
+$Config::General::Hierarchical::Dump::VERSION = 0.04;
 
 use strict;
 use warnings;
@@ -396,6 +396,6 @@ Daniele Ricci <icc |AT| cpan.org>
 
 =head1 VERSION
 
-0.03
+0.04
 
 =cut

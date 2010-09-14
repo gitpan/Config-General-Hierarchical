@@ -10,7 +10,7 @@
 
 package Config::General::Hierarchical;
 
-$Config::General::Hierarchical::VERSION = 0.03;
+$Config::General::Hierarchical::VERSION = 0.04;
 
 use strict;
 use warnings;
@@ -230,7 +230,7 @@ sub read {
 
     $self->constraint( $self->syntax );
     $self->value( $self->read_( $name, [] ) );
-    $self->expand_wild_keys($self->value);
+    $self->expand_wild_keys( $self->value );
     $self->name('');
 
     return $self;
@@ -775,7 +775,7 @@ is equivalent to this code
      DBServersDomain => 'my.domain',
  };
 
-=head1 HOW CONFIGURATION FILES ARE RED
+=head1 HOW CONFIGURATION FILES ARE READ
 
 For the purpose to read and to parse configuration files L<Config::General> is used, so it is better
 if you introduce yourself to that module before going on reading this chapter: it is written assuming
@@ -1470,6 +1470,6 @@ A special thanks to Dada S.p.A. (Italy) for giving authorization to publish this
 
 =head1 VERSION
 
-0.03
+0.04
 
 =cut
