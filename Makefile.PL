@@ -6,16 +6,15 @@ WriteMakefile(
         'Carp'                  => 0,
         'Class::Accessor::Fast' => 0,
         'Clone::PP'             => 1.02,
-        'Config::General'       => 2.37,
+        'Config::General'       => 2.49,
         'Cwd'                   => 0,
-        'Getopt::Long'          => 2.37,
         'Scalar::Util'          => 1.18,
         'Test::Differences'     => 0.47,
     },
     VERSION_FROM => 'Hierarchical.pm',
     clean        => {
         FILES =>
-'*~ .*~ */*~ */.*~ nohup.out *.tdy t/*.tdy Hierarchical/*.tdy t/dir/*~'
+'*~ .*~ */*~ */.*~ nohup.out *.tdy t/*.tdy Hierarchical/*.tdy t/dir/*~ t/dump.conf t/import.conf t/dir cover_db'
     }
 );
 

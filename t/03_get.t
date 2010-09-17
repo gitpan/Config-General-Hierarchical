@@ -70,14 +70,14 @@ qr{Config::General::Hierarchical: systax error in inline variable substitution f
 eval { $cfg->_unfind };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'ab'\nin file: (/[^/]+)+/t/get.conf at t/03_get.t line \d+\n during inline variable sostitution for variable 'unfind' at t/03_get.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'ab'\nin file: .+/t/get.conf at t/03_get.t line \d+\n during inline variable sostitution for variable 'unfind' at t/03_get.t line \d+.\n},
     'inline undef'
 );
 
 eval { $node->_unfind };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'b->c'\nin file: (/[^/]+)+/t/get.conf at t/03_get.t line \d+\n during inline variable sostitution for variable 'c->b->unfind' at t/03_get.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'b->c'\nin file: .+/t/get.conf at t/03_get.t line \d+\n during inline variable sostitution for variable 'c->b->unfind' at t/03_get.t line \d+.\n},
     'inline undef not root'
 );
 
@@ -112,7 +112,7 @@ is( $node->_key, 'abc', 'inline when lost root - check' );
 eval { Config::General::Hierarchical->new( file => 't/get.conf', check => 1 ); };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'b->c'\nin file: (/[^/]+)+/t/get.conf at t/03_get.t line \d+\n during inline variable sostitution for variable 'c->b->unfind' at t/03_get.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'b->c'\nin file: .+/t/get.conf at t/03_get.t line \d+\n during inline variable sostitution for variable 'c->b->unfind' at t/03_get.t line \d+.\n},
     'read - check error'
 );
 

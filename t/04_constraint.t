@@ -43,42 +43,42 @@ is(
 eval { $cfg->_Undefined };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'Undefined'\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'Undefined'\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'undefined without constraint'
 );
 
 eval { $cfg->_Node->_Undefined };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'Node->Undefined'\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'Node->Undefined'\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'undefined without constraint 2'
 );
 
 eval { $cfg->_Array };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'Array' is an array: should be a string or a node\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'Array' is an array: should be a string or a node\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'array without constraint'
 );
 
 eval { $cfg->_Integer };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'Integer' is an array but should be a integer value\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'Integer' is an array but should be a integer value\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'array but ...'
 );
 
 eval { $cfg->_Number };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'Number' is a node but should be a number\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'Number' is a node but should be a number\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'node but ...'
 );
 
 eval { $cfg->_Number };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'Number' is a node but should be a number\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'Number' is a node but should be a number\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'node but ... cache'
 );
 
@@ -89,14 +89,14 @@ is( $cfg->_NodeUnd, undef, 'undef node' );
 eval { $cfg->_EMail };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'EMail'\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'EMail'\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'not undef value'
 );
 
 eval { $cfg->_NodeDef };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'NodeDef'\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'NodeDef'\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'not undef node'
 );
 
@@ -114,7 +114,7 @@ is( $cfg->_Sub, 'ab', 'inline substitution - undef' );
 eval { $cfg->_Array2 };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'Array2' should be an array\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'Array2' should be an array\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'array but node'
 );
 
@@ -128,7 +128,7 @@ isa_ok( $cfg2, 'Config::General::Hierarchical', 'class inheritance 2' );
 eval { $cfg2->_Array };
 like(
     $@,
-qr{Config::General::Hierarchical: element 'b' of variable 'Array' is not a prooper integer value\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: element 'b' of variable 'Array' is not a prooper integer value\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'array elements syntax'
 );
 
@@ -140,7 +140,7 @@ is( $cfg->_Wild->_Test->_Integer, 123,           'wild constraints 2' );
 eval { $cfg->_Wild->_Test->_Other };
 like(
     $@,
-qr{Config::General::Hierarchical: value 'string' for variable 'Wild->Test->Other' is not a prooper integer value\nin file: (/[^/]+)+/t/constraint2.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value 'string' for variable 'Wild->Test->Other' is not a prooper integer value\nin file: .+/t/constraint2.conf at t/04_constraint.t line \d+.\n},
     'wild constraints 3'
 );
 
@@ -150,7 +150,7 @@ $cfg2 = $cfg2->_Struct;
 eval { $cfg->_SArray };
 like(
     $@,
-qr{Config::General::Hierarchical: request for undefined variable 'Struct->SArray'\nin file: (/[^/]+)+/t/constraint.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: request for undefined variable 'Struct->SArray'\nin file: .+/t/constraint.conf at t/04_constraint.t line \d+.\n},
     'struct 1 1'
 );
 is( ref $cfg2->_SArray,         'ARRAY', 'struct 1 2' );
@@ -163,7 +163,7 @@ is( $cfg->_SNode, 0, 'struct 3 1' );
 eval { $cfg2->_SNode };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'Struct->SNode' should be a node\nin file: (/[^/]+)+/t/constraint1.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'Struct->SNode' should be a node\nin file: .+/t/constraint1.conf at t/04_constraint.t line \d+.\n},
     'struct 3 2'
 );
 
@@ -194,77 +194,77 @@ $cfg = TestConfig->new( file => 't/constraint_type_error.conf' );
 eval { $cfg->_DateTime };
 like(
     $@,
-qr{Config::General::Hierarchical: value '1976-01-23' for variable 'DateTime' is not a prooper datetime\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value '1976-01-23' for variable 'DateTime' is not a prooper datetime\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'A error'
 );
 
 eval { $cfg->_Boolean };
 like(
     $@,
-qr{Config::General::Hierarchical: value 'onn' for variable 'Boolean' is not a prooper boolean value\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value 'onn' for variable 'Boolean' is not a prooper boolean value\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'B error'
 );
 
 eval { $cfg->_Date };
 like(
     $@,
-qr{Config::General::Hierarchical: value '1976/01/23' for variable 'Date' is not a prooper date\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value '1976/01/23' for variable 'Date' is not a prooper date\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'D error'
 );
 
 eval { $cfg->_EMail };
 like(
     $@,
-qr{Config::General::Hierarchical: value 'email.test.conf' for variable 'EMail' is not a prooper e-mail address\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value 'email.test.conf' for variable 'EMail' is not a prooper e-mail address\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'E error'
 );
 
 eval { $cfg->_Integer };
 like(
     $@,
-qr{Config::General::Hierarchical: value '4.5' for variable 'Integer' is not a prooper integer value\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value '4.5' for variable 'Integer' is not a prooper integer value\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'I error'
 );
 
 eval { $cfg->_Number };
 like(
     $@,
-qr{Config::General::Hierarchical: value '2-3' for variable 'Number' is not a prooper number\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value '2-3' for variable 'Number' is not a prooper number\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'N error'
 );
 
 eval { $cfg->_String1 };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'String1' is an array but should be a string\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'String1' is an array but should be a string\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'S error'
 );
 
 eval { $cfg->_String2 };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'String2' is a node but should be a string\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'String2' is a node but should be a string\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     '\`\` error'
 );
 
 eval { $cfg->_String3 };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'String3' is an array: should be a string or a node\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'String3' is an array: should be a string or a node\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'undef error'
 );
 
 eval { $cfg->_Time };
 like(
     $@,
-qr{Config::General::Hierarchical: value '15:0:0' for variable 'Time' is not a prooper time\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: value '15:0:0' for variable 'Time' is not a prooper time\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'T error'
 );
 
 eval { $cfg->_Node };
 like(
     $@,
-qr{Config::General::Hierarchical: variable 'Node' should be a node\nin file: (/[^/]+)+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
+qr{Config::General::Hierarchical: variable 'Node' should be a node\nin file: .+/t/constraint_type_error.conf at t/04_constraint.t line \d+.\n},
     'node error'
 );
 

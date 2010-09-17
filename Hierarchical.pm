@@ -10,7 +10,7 @@
 
 package Config::General::Hierarchical;
 
-$Config::General::Hierarchical::VERSION = 0.04;
+$Config::General::Hierarchical::VERSION = 0.05;
 
 use strict;
 use warnings;
@@ -260,7 +260,6 @@ sub read_ {
         $cfg = Config::General->new(
             '-AllowMultiOptions'     => 1,
             '-AutoTrue'              => 0,
-            '-BackslashEscape'       => 0,
             '-CComments'             => 0,
             '-ConfigFile'            => $name,
             '-ExtendedAccess'        => 0,
@@ -355,6 +354,7 @@ sub convert_hash {
             ( $undefined{$key}, my $tmp ) =
               $self->convert_hash( $hash->{$key}, $file, $in_file );
         }
+        $hash->{$key} = '' unless defined $hash->{$key};
         $hash->{$key} = Config::General::Hierarchical::Value->new(
             { value => $hash->{$key}, file => $file } );
     }
@@ -1470,6 +1470,6 @@ A special thanks to Dada S.p.A. (Italy) for giving authorization to publish this
 
 =head1 VERSION
 
-0.04
+0.05
 
 =cut

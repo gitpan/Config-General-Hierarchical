@@ -2,7 +2,7 @@
 
 package Config::General::Hierarchical::Test;
 
-$Config::General::Hierarchical::Test::VERSION = 0.04;
+$Config::General::Hierarchical::Test::VERSION = 0.05;
 
 use strict;
 use warnings;
@@ -54,6 +54,6 @@ Daniele Ricci <icc |AT| cpan.org>
 
 =head1 VERSION
 
-0.04
+0.05
 
 =cut

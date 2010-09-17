@@ -37,7 +37,7 @@ is( $cfg->name, 'name', 'mixed parameters opt 1' );
 eval { $cfg->undefined; };
 like(
     $@,
-qr{^Can't call method "undefined" on an undefined value at (/[^/]+)+/Hierarchical\.pm line \d+\.\n$},
+qr{^Can't call method "undefined" on an undefined value at .+/Hierarchical\.pm line \d+\.\n$},
     'mixed parameters opt 2'
 );
 

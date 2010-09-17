@@ -2,13 +2,12 @@
 
 package Config::General::Hierarchical::Dump;
 
-$Config::General::Hierarchical::Dump::VERSION = 0.04;
+$Config::General::Hierarchical::Dump::VERSION = 0.05;
 
 use strict;
 use warnings;
 
 use Config::General::Hierarchical;
-use Getopt::Long qw( GetOptionsFromArray :config bundling pass_through );
 
 sub deep_dump {
     my ( $names, $cfg, $errors ) = @_;
@@ -51,18 +50,13 @@ sub do_all {
 
     my ( $check, $file, $fixed_length, $help, $json );
     my ( $sfile, $stfile );
+    my $error = '';
 
-    GetOptionsFromArray(
-        $params_array,
-        'check|c'        => \$check,
-        'file|f'         => \$file,
-        'fixed-length|l' => \$fixed_length,
-        'help|h'         => \$help,
-        'json|j'         => \$json,
-    );
+    parse_options( $params_array, \$error, \$check, \$file, \$fixed_length,
+        \$help, \$json );
 
     return <<EOF if $help;
-Usage: $0
+$error Usage: $0
 Dumps the Config::General::Hierarchical configuration file itself
 
  -c, --check          if present, prints only the variables that do
@@ -237,6 +231,68 @@ sub make_format {
     return $format;
 }
 
+sub parse_options {
+    my ( $params_array, $error, $check, $file, $fixed_length, $help, $json ) =
+      @_;
+
+    foreach my $param (@$params_array) {
+        if ( substr( $param, 0, 1 ) ne '-' ) {
+            $$help  = 1;
+            $$error = "Unknown options '$param'\n\n";
+            return;
+        }
+
+        if ( substr( $param, 0, 2 ) eq '--' ) {
+            if ( $param eq '--check' ) {
+                $$check = 1;
+            }
+            elsif ( $param eq '--file' ) {
+                $$file = 1;
+            }
+            elsif ( $param eq '--fixed-length' ) {
+                $$fixed_length = 1;
+            }
+            elsif ( $param eq '--help' ) {
+                $$help = 1;
+            }
+            elsif ( $param eq '--json' ) {
+                $$json = 1;
+            }
+            else {
+                $$help  = 1;
+                $$error = "Unknown options '$param'\n\n";
+                return;
+            }
+        }
+        else {
+            for ( my $i = 1 ; $i < length $param ; ++$i ) {
+                my $p = substr $param, $i, 1;
+
+                if ( $p eq 'c' ) {
+                    $$check = 1;
+                }
+                elsif ( $p eq 'f' ) {
+                    $$file = 1;
+                }
+                elsif ( $p eq 'h' ) {
+                    $$help = 1;
+                }
+                elsif ( $p eq 'j' ) {
+                    $$json = 1;
+                }
+                elsif ( $p eq 'l' ) {
+                    $$fixed_length = 1;
+                }
+                else {
+                    $$help  = 1;
+                    $$error = "Unknown options '-$p'\n\n";
+                    return;
+                }
+            }
+        }
+    }
+}
+
 sub parser { return 'Config::General::Hierarchical'; }
 
 sub translate_json {
@@ -396,6 +452,6 @@ Daniele Ricci <icc |AT| cpan.org>
 
 =head1 VERSION
 
-0.04
+0.05
 
 =cut

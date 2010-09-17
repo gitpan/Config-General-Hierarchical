@@ -9,7 +9,7 @@ my $tests;
 my $skip;
 
 BEGIN {
-    $tests = 41;
+    $tests = 59;
 }
 
 use Test::More tests => $tests;
@@ -18,11 +18,17 @@ use Test::Differences;
 require_ok Config::General::Hierarchical::Dump;
 require_ok Config::General::Hierarchical::DumpTest;
 
-`perl -e '' 2> /dev/null`;
+my $bin = `which perl`;
+
+chomp $bin;
+`$bin -e '' 2> /dev/null`;
 $skip = $?;
 
 SKIP: {
     skip "perl executable can't be found", $tests - 3 if $skip;
+
+`echo -e "#!$bin -MConfig::General::Hierarchical::Dump\nvariable value\n<node>\n key value\n keys\n</node>\ndefined" > t/dump.conf`;
+    `chmod 755 t/dump.conf`;
 
     is( `t/dump.conf`, <<EOF, 'self execution' );
 defined = '';
@@ -31,9 +37,15 @@ node->keys = '';
 variable = 'value';
 EOF
 
+    my $cfg = Config::General::Hierarchical->new( file => 't/dump.conf' );
+    my $res = '';
+    eval { $res = $cfg->_defined; };
+    is( $@,   '', 'compatibility 1' );
+    is( $res, '', 'compatibility 2' );
+
     like(
         Config::General::Hierarchical::Dump->do_all( 't/dump_error.conf', [] ),
-qr{Parsing error: Config::General::Hierarchical: Config::General: Block "<node>" has no EndBlock statement \(level: 2, chunk 1\)\!\nin file: (/[^/]+)+/t/dump_error.conf\n  at (/[^/]+)+/Hierarchical/Dump.pm line \d+\n$},
+qr{Parsing error: Config::General::Hierarchical: Config::General: Block "<node>" has no EndBlock statement \(level: 2, chunk 1\)\!\nin file: .+/t/dump_error.conf\n  at .+/Hierarchical/Dump.pm line \d+\n$},
         'parse error'
     );
 
@@ -47,7 +59,7 @@ node->keys = '';
 variable = 'value';
 EOF
 
-    my $path = "(/[^/]+)+/t/";
+    my $path = ".+/t/";
     my @out =
       Config::General::Hierarchical::Dump->do_all( 't/dump.conf', ['-f'] );
     like( $out[0], qr{Configuration files base dir: $path}, '-f 1' );
@@ -57,12 +69,29 @@ EOF
     like( $out[4], qr{variable = 'value'; dump.conf},       '-f 5' );
 
     @out =
+      Config::General::Hierarchical::Dump->do_all( 't/dump.conf', ['--file'] );
+    like( $out[0], qr{Configuration files base dir: $path}, '--file 1' );
+    like( $out[1], qr{defined = ''; dump.conf},             '--file 2' );
+    like( $out[2], qr{node->key = 'value'; dump.conf},      '--file 3' );
+    like( $out[3], qr{node->keys = ''; dump.conf},          '--file 4' );
+    like( $out[4], qr{variable = 'value'; dump.conf},       '--file 5' );
+
+    @out =
       Config::General::Hierarchical::Dump->do_all( 't/dump.conf', ['-fl'] );
-    like( $out[0], qr{Configuration files base dir: $path}, '-fl 1' );
-    like( $out[1], qr{defined    = '';      dump.conf},     '-fl 2' );
-    like( $out[2], qr{node->key  = 'value'; dump.conf},     '-fl 3' );
-    like( $out[3], qr{node->keys = '';      dump.conf},     '-fl 4' );
-    like( $out[4], qr{variable   = 'value'; dump.conf},     '-fl 5' );
+    like( $out[0], qr{Configuration files base dir: $path}, '-fl 1 1' );
+    like( $out[1], qr{defined    = '';      dump.conf},     '-fl 1 2' );
+    like( $out[2], qr{node->key  = 'value'; dump.conf},     '-fl 1 3' );
+    like( $out[3], qr{node->keys = '';      dump.conf},     '-fl 1 4' );
+    like( $out[4], qr{variable   = 'value'; dump.conf},     '-fl 1 5' );
+
+    @out =
+      Config::General::Hierarchical::Dump->do_all( 't/dump.conf',
+        [ '--file', '--fixed-length' ] );
+    like( $out[0], qr{Configuration files base dir: $path}, '-fl 2 1' );
+    like( $out[1], qr{defined    = '';      dump.conf},     '-fl 2 2' );
+    like( $out[2], qr{node->key  = 'value'; dump.conf},     '-fl 2 3' );
+    like( $out[3], qr{node->keys = '';      dump.conf},     '-fl 2 4' );
+    like( $out[4], qr{variable   = 'value'; dump.conf},     '-fl 2 5' );
 
     @out = Config::General::Hierarchical::Dump->do_all( 't/dump.conf', ['-l'] );
     like( $out[0], qr{defined    = '';},      '-l 1' );
@@ -78,7 +107,7 @@ EOF
             )
         ),
         <<EOF, '-h' );
-Usage: t/99_dump.t
+ Usage: t/99_dump.t
 Dumps the Config::General::Hierarchical configuration file itself
 
  -c, --check          if present, prints only the variables that do
@@ -88,6 +117,29 @@ Dumps the Config::General::Hierarchical configuration file itself
  -h, --help           prints this help and exits
  -j, --json           prints output as json
 EOF
+
+    is(
+        join(
+            '',
+            Config::General::Hierarchical::Dump->do_all(
+                't/dump.conf', ['--help']
+            )
+        ),
+        <<EOF, '--help' );
+ Usage: t/99_dump.t
+Dumps the Config::General::Hierarchical configuration file itself
+
+ -c, --check          if present, prints only the variables that do
+                      not respect syntax constraint
+ -f, --file           shows in which file variables are defined
+ -l, --fixed-length   formats output as fixed length fields
+ -h, --help           prints this help and exits
+ -j, --json           prints output as json
+EOF
+
+    `mkdir -p t/dir`;
+`echo -e "#!$bin -MConfig::General::Hierarchical::DumpTest\ninherits ../dump_inherited.conf\nvalue value\n<node>\n undefined key\n undefined value\n</node>\narray 1\narray 2" > t/dir/dump_inherits.conf`;
+    `chmod 755 t/dir/dump_inherits.conf`;
 
     is( `t/dir/dump_inherits.conf`, <<EOF, 'inherited self execution' );
 array = ( '1', '2' );
@@ -143,6 +195,14 @@ EOF
     );
 
     is(
+        Config::General::Hierarchical::DumpTest->do_all(
+            't/dir/dump_inherits.conf', ['--json']
+        ),
+'{"array":["1","2"],"defined":"really defined","node":{"array":["s1","s2"],"key":null,"value":"error"},"value":"error"}',
+        '--json'
+    );
+
+    is(
         join(
             '',
             Config::General::Hierarchical::DumpTest->do_all(
@@ -151,6 +211,17 @@ EOF
         ),
         "node->value = error;\nvalue = error;\n",
         '-c'
+    );
+
+    is(
+        join(
+            '',
+            Config::General::Hierarchical::DumpTest->do_all(
+                't/dir/dump_inherits.conf', ['--check']
+            )
+        ),
+        "node->value = error;\nvalue = error;\n",
+        '--check'
     );
 
     is(
@@ -170,7 +241,7 @@ EOF
             join(
                 '',
                 Config::General::Hierarchical::Dump->do_all(
-                    't/dump_substitutions.conf', ['']
+                    't/dump_substitutions.conf', []
                 )
             )
         ],
@@ -191,6 +262,9 @@ EOF
         "node->array = *;\n* = ( 'a\nb', 'a\nb\n' );\nnode->key   = 'ab';\n",
         'subs 2'
     );
+
+`echo -e "#!$bin -MConfig::General::Hierarchical::Dump=Config::General::Hierarchical::Test\nvariable value\n<node>\n key value\n keys\n</node>\ndefined\nvalue a" > t/import.conf`;
+    `chmod 755 t/import.conf`;
 
     is( `t/import.conf`, <<EOF, 'import param 1' );
 defined = '';
@@ -215,6 +289,26 @@ value = error;
 variable = 'value';
 EOF
 
+    like(
+        join( '',
+            Config::General::Hierarchical::Dump->do_all( 't.conf', ['help'] ) ),
+        qr{Unknown options 'help'},
+        'unknown option'
+    );
+
+    like(
+        join( '',
+            Config::General::Hierarchical::Dump->do_all( 't.conf', ['-cz'] ) ),
+        qr{Unknown options '-z'},
+        'unknown short option'
+    );
+
+    like(
+        join( '',
+            Config::General::Hierarchical::Dump->do_all( 't.conf', ['--cz'] ) ),
+        qr{Unknown options '--cz'},
+        'unknown long option'
+    );
 }
 
 package other;
