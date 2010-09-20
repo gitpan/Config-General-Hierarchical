@@ -27,7 +27,7 @@ $skip = $?;
 SKIP: {
     skip "perl executable can't be found", $tests - 3 if $skip;
 
-`echo -e "#!$bin -MConfig::General::Hierarchical::Dump\nvariable value\n<node>\n key value\n keys\n</node>\ndefined" > t/dump.conf`;
+`echo "#!$bin -MConfig::General::Hierarchical::Dump\nvariable value\n<node>\n key value\n keys\n</node>\ndefined" > t/dump.conf`;
     `chmod 755 t/dump.conf`;
 
     is( `t/dump.conf`, <<EOF, 'self execution' );
@@ -138,7 +138,7 @@ Dumps the Config::General::Hierarchical configuration file itself
 EOF
 
     `mkdir -p t/dir`;
-`echo -e "#!$bin -MConfig::General::Hierarchical::DumpTest\ninherits ../dump_inherited.conf\nvalue value\n<node>\n undefined key\n undefined value\n</node>\narray 1\narray 2" > t/dir/dump_inherits.conf`;
+`echo "#!$bin -MConfig::General::Hierarchical::DumpTest\ninherits ../dump_inherited.conf\nvalue value\n<node>\n undefined key\n undefined value\n</node>\narray 1\narray 2" > t/dir/dump_inherits.conf`;
     `chmod 755 t/dir/dump_inherits.conf`;
 
     is( `t/dir/dump_inherits.conf`, <<EOF, 'inherited self execution' );
@@ -263,7 +263,7 @@ EOF
         'subs 2'
     );
 
-`echo -e "#!$bin -MConfig::General::Hierarchical::Dump=Config::General::Hierarchical::Test\nvariable value\n<node>\n key value\n keys\n</node>\ndefined\nvalue a" > t/import.conf`;
+`echo "#!$bin -MConfig::General::Hierarchical::Dump=Config::General::Hierarchical::Test\nvariable value\n<node>\n key value\n keys\n</node>\ndefined\nvalue a" > t/import.conf`;
     `chmod 755 t/import.conf`;
 
     is( `t/import.conf`, <<EOF, 'import param 1' );

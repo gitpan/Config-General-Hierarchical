@@ -10,7 +10,7 @@
 
 package Config::General::Hierarchical;
 
-$Config::General::Hierarchical::VERSION = 0.05;
+$Config::General::Hierarchical::VERSION = 0.06;
 
 use strict;
 use warnings;
@@ -239,8 +239,8 @@ sub read {
 sub read_ {
     my ( $self, $name, $children ) = @_;
 
-    my $tmp   = abs_path($name);
-    my $error = !$tmp;
+    my $tmp   = eval { abs_path($name); };
+    my $error = $@ || ! $tmp;
     $name = $tmp if $tmp;
     my $files = $self->opt->files;
     my $in_file =
@@ -1470,6 +1470,6 @@ A special thanks to Dada S.p.A. (Italy) for giving authorization to publish this
 
 =head1 VERSION
 
-0.05
+0.06
 
 =cut
