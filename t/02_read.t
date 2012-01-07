@@ -19,7 +19,7 @@ qr{^Config::General::Hierarchical: no such directory: t/e/s/t\n  at t/02_read.t 
 eval { Config::General::Hierarchical->new( file => 't/not_exists.conf' ); };
 like(
     $@,
-qr{^Config::General::Hierarchical: no such file: .+/t/not_exists.conf\n  at t/02_read.t line \d+\n$},
+qr{^Config::General::Hierarchical: no such (directory|file): .+/t/not_exists.conf\n  at t/02_read.t line \d+\n$},
     'file doesn\'t exists'
 );
 

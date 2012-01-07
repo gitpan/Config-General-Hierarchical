@@ -2,9 +2,10 @@ Changelog
 Hierarchical/Dump.pm
 Hierarchical/DumpTest.pm
 Hierarchical/Test.pm
-Hierarchical.pm
+lib/Config/General/Hierarchical.pm
 Makefile.PL
 MANIFEST
+tidy
 t/01_new.t
 t/02_read.t
 t/03_get.t
@@ -38,4 +39,5 @@ t/inherits_error2.conf
 t/inherits_error3.conf
 t/inherits_error3_.conf
 t/inherits_error4.conf
-META.yml                                 Module meta-data (added by MakeMaker)
+META.yml                                 Module YAML meta-data (added by MakeMaker)
+META.json                                Module JSON meta-data (added by MakeMaker)

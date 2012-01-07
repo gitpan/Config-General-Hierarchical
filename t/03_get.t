@@ -97,13 +97,17 @@ qr{Config::General::Hierarchical: can't use node or array variable in inline var
 
 is( $cfg->_sub, '$abcd', 'inline substitution' );
 
-$node = Config::General::Hierarchical->new( file => 't/get3.conf' )->_node;
-eval { $node->_key; };
-like(
-    $@,
+SKIP: {
+    skip 'excluded waken', 1
+      if $Config::General::Hierarchical::ExcludeWeaken::exclude;
+    $node = Config::General::Hierarchical->new( file => 't/get3.conf' )->_node;
+    eval { $node->_key; };
+    like(
+        $@,
 qr{Config::General::Hierarchical: can't do inline variable substitution for variable 'node->key' when reference to root node was lost at t/03_get.t line \d+.\n},
-    'inline when lost root'
-);
+        'inline when lost root'
+    );
+}
 
 $node = Config::General::Hierarchical->new( file => 't/get3.conf', check => 1 )
   ->_node;

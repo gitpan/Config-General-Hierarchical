@@ -7,6 +7,7 @@
 
 use Data::Dumper;
 use Test::More tests => 20;
+use Config::General::Hierarchical::ExcludeWeaken;
 
 BEGIN { use_ok 'Config::General::Hierarchical' }
 require_ok('Config::General::Hierarchical');
@@ -75,4 +76,5 @@ $Config::General::Hierarchical::Test::count = 0;
       Config::General::Hierarchical::Test->new(
         file => 't/dump_substitutions.conf' );
 }
-is( $Config::General::Hierarchical::Test::count, 1, 'DESTROY' );
+is( $Config::General::Hierarchical::Test::count,
+    $Config::General::Hierarchical::ExcludeWeaken::exclude ? 0 : 1, 'DESTROY' );

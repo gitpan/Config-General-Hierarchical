@@ -1,5 +1,17 @@
 use ExtUtils::MakeMaker;
 
+my $exclude = $ENV{EXCLUDE_WEAKEN} ? 1 : 0;
+
+open FD, '>Hierarchical/ExcludeWeaken.pm';
+print FD <<EOF;
+package Config::General::Hierarchical::ExcludeWeaken;
+
+our \$exclude = $exclude;
+
+1;
+EOF
+close FD;
+
 WriteMakefile(
     NAME      => 'Config::General::Hierarchical',
     PREREQ_PM => {
@@ -11,7 +23,7 @@ WriteMakefile(
         'Scalar::Util'          => 1.18,
         'Test::Differences'     => 0.47,
     },
-    VERSION_FROM => 'Hierarchical.pm',
+    VERSION_FROM => 'lib/Config/General/Hierarchical.pm',
     clean        => {
         FILES =>
 '*~ .*~ */*~ */.*~ nohup.out *.tdy t/*.tdy Hierarchical/*.tdy t/dir/*~ t/dump.conf t/import.conf t/dir cover_db'

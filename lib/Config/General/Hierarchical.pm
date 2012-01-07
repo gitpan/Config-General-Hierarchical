@@ -10,7 +10,7 @@
 
 package Config::General::Hierarchical;
 
-$Config::General::Hierarchical::VERSION = 0.06;
+$Config::General::Hierarchical::VERSION = 0.07;
 
 use strict;
 use warnings;
@@ -18,6 +18,7 @@ use warnings;
 use Carp;
 use Clone::PP qw( clone );
 use Config::General;
+use Config::General::Hierarchical::ExcludeWeaken;
 use Cwd qw( abs_path );
 use Scalar::Util qw( weaken );
 
@@ -83,7 +84,8 @@ sub new {
             )
         );
 
-        weaken( $self->opt->{root} );
+        weaken( $self->opt->{root} )
+          unless $Config::General::Hierarchical::ExcludeWeaken::exclude;
 
         $self->read($file) if $file;
 
@@ -239,8 +241,8 @@ sub read {
 sub read_ {
     my ( $self, $name, $children ) = @_;
 
-    my $tmp   = eval { abs_path($name); };
-    my $error = $@ || ! $tmp;
+    my $tmp = eval { abs_path($name); };
+    my $error = $@ || !$tmp;
     $name = $tmp if $tmp;
     my $files = $self->opt->files;
     my $in_file =
@@ -1445,7 +1447,16 @@ Using many of the features of C<Config::General::Hierarchical> it is possible to
 
 =head1 BUGS AND INCOMPATIBILITIES
 
-Please report.
+Some perl versions has a bug which give a message like following one:
+
+ Attempt to free unreferenced scalar: SV 0xe7411a0, Perl interpreter: 0xe160010 at t/99_dump.t line 2 during global destruction.
+
+If it is possible to upgrade perl version, this is the best solution, otherwise an installation workaround can be used:
+
+ export EXCLUDE_WEAKEN=1
+ cpan Config::General::Hierarchical
+
+Please report here https://rt.cpan.org/Dist/Display.html?Name=Config-General-Hierarchical any other one.
 
 =head1 SEE ALSO
 
@@ -1470,6 +1481,6 @@ A special thanks to Dada S.p.A. (Italy) for giving authorization to publish this
 
 =head1 VERSION
 
-0.06
+0.07
 
 =cut
